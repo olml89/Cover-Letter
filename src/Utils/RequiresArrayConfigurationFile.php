@@ -6,19 +6,18 @@ namespace olml89\CoverLetter\Utils;
 
 use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 
-trait LoadableFromPath
+trait RequiresArrayConfigurationFile
 {
-    public static function fromPath(string $path): static
+    /**
+     * @throws InputReadingException
+     */
+    private static function requireArrayConfigurationFile(string $path): array
     {
         try {
-            $data = require $path;
-
-            return self::fromArray($data);
+            return require $path;
         }
         catch (Throwable) {
             throw new InputReadingException($path);
         }
     }
-
-    abstract public static function fromArray(array $data): static;
 }

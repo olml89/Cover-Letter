@@ -8,7 +8,7 @@ use olml89\CoverLetter\ReplaceableText\Company;
 use olml89\CoverLetter\ReplaceableText\Position;
 use olml89\CoverLetter\Utils\Result;
 
-final readonly class CoverLetter
+final readonly class CreateCoverLetter
 {
     public function __construct(
         private CoverLetterCreator $coverLetterCreator,

@@ -6,13 +6,18 @@ namespace olml89\CoverLetter\PDFCreator;
 
 use DateTimeImmutable;
 use Dompdf\Dompdf;
+use olml89\CoverLetter\Filesystem\Filesystem;
+use olml89\CoverLetter\Filesystem\TemplateFile;
+use olml89\CoverLetter\Filesystem\WritableFile;
 use olml89\CoverLetter\ReplaceableText\Description;
 use olml89\CoverLetter\ReplaceableText\Keywords;
-use olml89\CoverLetter\Utils\WritableFile;
-use olml89\CoverLetter\Utils\TemplateFile;
 
 final readonly class DOMPDFCreator implements PDFCreator
 {
+    public function __construct(
+        private Filesystem $filesystem,
+    ) {}
+
     /**
      * @throws OutputCreationException
      */
@@ -33,7 +38,7 @@ final readonly class DOMPDFCreator implements PDFCreator
             ->replace(new Description($metadata->description ?? ''));
 
         $coverLetterFile = $this->createCoverLetterFile($domPdf, $path, $template);
-        $coverLetterFile->save();
+        $this->filesystem->saveWritableFile($coverLetterFile);
 
         $this->addCreationDateAndModificationDate($path, $metadata->creationDate, $metadata->modDate);
 
@@ -92,7 +97,7 @@ final readonly class DOMPDFCreator implements PDFCreator
 
     private function createCoverLetterFile(Dompdf $domPdf, string $path, TemplateFile $template): WritableFile
     {
-        $domPdf->loadHtml($template->getContent());
+        $domPdf->loadHtml($template->content);
         $domPdf->render();
 
         return new WritableFile(

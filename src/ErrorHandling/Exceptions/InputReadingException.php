@@ -19,13 +19,33 @@ final class InputReadingException extends RuntimeException
         );
     }
 
-    public static function dir(string $dirPath): self
+    public static function dir(string $path): self
     {
-        return new self('directory', $dirPath);
+        return new self(
+            sprintf(
+                '\'%s\' directory does not exist or it is not readable',
+                $path,
+            )
+        );
     }
 
-    public static function file(string $filePath): self
+    public static function file(string $path): self
     {
-        return new self('file', $filePath);
+        return new self(
+            sprintf(
+                '\'%s\' file does not exist or it is not readable',
+                $path,
+            )
+        );
+    }
+
+    public static function fileContent(string $path): self
+    {
+        return new self(
+            sprintf(
+                'Error getting content from \'%s\'',
+                $path,
+            )
+        );
     }
 }

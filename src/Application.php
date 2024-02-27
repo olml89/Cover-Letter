@@ -8,11 +8,15 @@ use DI\Container;
 use Dotenv\Dotenv;
 use olml89\CoverLetter\ErrorHandling\ErrorHandler;
 use olml89\CoverLetter\ErrorHandling\ErrorHandlerManager;
+use olml89\CoverLetter\Filesystem\DiskFilesystem;
+use olml89\CoverLetter\Filesystem\Filesystem;
 use olml89\CoverLetter\PDFCreator\DOMPDFCreator;
 use olml89\CoverLetter\PDFCreator\Metadata;
 use olml89\CoverLetter\PDFCreator\PDFCreator;
+use Psr\Container\ContainerInterface;
 use function DI\create;
 use function DI\factory;
+use function DI\get;
 
 final class Application
 {
@@ -33,17 +37,21 @@ final class Application
     {
         return new Container([
             // Needed to be able to call the shutdown method from the outside tear downing tests
-            ErrorHandlerManager::class => create()->constructor(new ErrorHandler()),
+            ErrorHandlerManager::class => create()->constructor(create(ErrorHandler::class)),
 
-            // Need to bind the interface to the default implementation
-            PDFCreator::class => create(DOMPDFCreator::class),
+            // Need to bind the interfaces to the default implementations
+            Filesystem::class => create(DiskFilesystem::class),
+            PDFCreator::class => create(DOMPDFCreator::class)->constructor(get(Filesystem::class)),
 
-            // Need to load these value objects providing a scalar value which is the path to grab values from
+            // Need to load these value objects providing a scalar value which is the path to grab values from.
+            // Won't be created until CoverLetterCreator is needed.
             Metadata::class => factory(
-                fn (): Metadata => Metadata::fromPath('./config/metadata.php')
+                fn (): Metadata => Metadata::fromPath()
             ),
             Configuration::class => factory(
-                fn (): Configuration => Configuration::fromPath('./config/config.php')
+                fn (ContainerInterface $container): Configuration => Configuration::fromPath(
+                    $container->get(Filesystem::class)
+                )
             ),
         ]);
     }

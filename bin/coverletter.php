@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use olml89\CoverLetter\Application;
-use olml89\CoverLetter\CoverLetter;
+use olml89\CoverLetter\CreateCoverLetter;
 use olml89\CoverLetter\ReplaceableText\Company;
 use olml89\CoverLetter\ReplaceableText\Position;
 
-require './vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$coverLetter = Application::bootstrap()->get(CoverLetter::class);
+$coverLetter = Application::bootstrap()->get(CreateCoverLetter::class);
 
 $result = $coverLetter->create(
     Position::fromInput($argv[1] ?? null),

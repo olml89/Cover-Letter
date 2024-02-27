@@ -6,11 +6,13 @@ namespace olml89\CoverLetter\PDFCreator;
 
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
 use olml89\CoverLetter\Utils\DatetimeImmutable;
-use olml89\CoverLetter\Utils\LoadableFromPath;
+use olml89\CoverLetter\Utils\RequiresArrayConfigurationFile;
 
 final readonly class Metadata
 {
-    use LoadableFromPath;
+    use RequiresArrayConfigurationFile;
+
+    private const string PATH = __DIR__ . '/../../config/metadata.php';
 
     /**
      * @throws ValidationException
@@ -32,8 +34,10 @@ final readonly class Metadata
         }
     }
 
-    public static function fromArray(array $data): static
+    public static function fromPath(): self
     {
+        $data = self::requireArrayConfigurationFile(self::PATH);
+
         return new self(
             creationDate: DatetimeImmutable::create($data['creationDate']),
             creator: $data['creator'],
