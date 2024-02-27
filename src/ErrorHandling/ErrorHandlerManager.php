@@ -8,7 +8,7 @@ use ErrorException;
 use JetBrains\PhpStorm\NoReturn;
 use Throwable;
 
-final readonly class ErrorHandlerBootstrapper
+final readonly class ErrorHandlerManager
 {
     public function __construct(
         private ErrorHandler $errorHandler,
@@ -20,10 +20,16 @@ final readonly class ErrorHandlerBootstrapper
         register_shutdown_function([$this, 'handleShutdown']);
     }
 
+    public function shutdown(): void
+    {
+        restore_error_handler();
+        restore_exception_handler();
+    }
+
     /**
      * @throws ErrorException
      */
-    public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void
+    private function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): void
     {
         throw new ErrorException(
             message: $message,
@@ -35,7 +41,7 @@ final readonly class ErrorHandlerBootstrapper
     }
 
     #[NoReturn]
-    public function handleException(Throwable $e): void
+    private function handleException(Throwable $e): void
     {
         $this->errorHandler->handle($e);
     }
@@ -43,7 +49,7 @@ final readonly class ErrorHandlerBootstrapper
     /**
      * @throws ErrorException
      */
-    public function handleShutdown(): void
+    private function handleShutdown(): void
     {
         $fatalErrorTypes = [E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE];
 

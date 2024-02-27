@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\NoReturn;
 use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
-use olml89\CoverLetter\Utils\Command;
+use olml89\CoverLetter\Utils\Result;
 use Throwable;
 
 final class ErrorHandler
@@ -22,13 +22,13 @@ final class ErrorHandler
         exit($errorCommand->status);
     }
 
-    private function mapExceptionToCommand(Throwable $e): Command
+    private function mapExceptionToCommand(Throwable $e): Result
     {
         return match ($e::class) {
-            ValidationException::class => Command::usage($e),
-            InputReadingException::class => Command::noinput($e),
-            OutputCreationException::class => Command::cantCreate($e),
-            default => Command::software($e),
+            ValidationException::class => Result::usage($e),
+            InputReadingException::class => Result::noinput($e),
+            OutputCreationException::class => Result::cantCreate($e),
+            default => Result::software($e),
         };
     }
 }

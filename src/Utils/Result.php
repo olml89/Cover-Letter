@@ -9,7 +9,7 @@ use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
 use Throwable;
 
-final readonly class Command
+final readonly class Result
 {
     /**
      * https://www.gsp.com/cgi-bin/man.cgi?section=3&topic=sysexits
