@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Mockery;
-use olml89\CoverLetter\CreateCoverLetter;
 use olml89\CoverLetter\CoverLetterCreator;
+use olml89\CoverLetter\CreateCoverLetter;
 use olml89\CoverLetter\Filesystem\Directory;
 use olml89\CoverLetter\Filesystem\Filesystem;
 use olml89\CoverLetter\Filesystem\TemplateFile;
 use olml89\CoverLetter\Utils\Result;
-use Tests\Factories\CompanyFactory;
-use Tests\Factories\PositionFactory;
 use Tests\Factories\RandomStringGenerator;
+use Tests\Factories\ReplaceableText\CompanyFactory;
+use Tests\Factories\ReplaceableText\PositionFactory;
 use Tests\TestCase;
 
 final class CreateCoverLetterTest extends TestCase

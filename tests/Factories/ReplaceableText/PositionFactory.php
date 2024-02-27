@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Factories;
+namespace Tests\Factories\ReplaceableText;
 
 use olml89\CoverLetter\ReplaceableText\Position;
 

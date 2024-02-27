@@ -25,8 +25,8 @@ final readonly class Metadata
         public ?string $producer,
         public ?string $description,
     ) {
-        if (!is_null($this->creationDate) && !is_null($this->modDate)) {
-            return new ValidationException(sprintf(
+        if (!is_null($this->creationDate) && !is_null($this->modDate) && ($this->modDate < $this->creationDate)) {
+            throw new ValidationException(sprintf(
         'modDate date \'%s\' cannot be earlier in time than creationDate \'%s\'',
                 $this->modDate,
                 $this->creationDate,
