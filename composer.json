@@ -14,11 +14,13 @@
         }
     ],
     "require": {
+        "ext-libxml": "*",
         "dompdf/dompdf": "^2.0",
         "vlucas/phpdotenv": "^5.6",
         "php-di/php-di": "^7.0"
     },
     "require-dev": {
+        "ext-dom": "*",
         "phpunit/phpunit": "^11.0",
         "mockery/mockery": "^1.6",
         "fakerphp/faker": "^1.23",

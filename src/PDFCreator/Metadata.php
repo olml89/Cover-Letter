@@ -25,13 +25,30 @@ final readonly class Metadata
         public ?string $producer,
         public ?string $description,
     ) {
-        if (!is_null($this->creationDate) && !is_null($this->modDate) && ($this->modDate < $this->creationDate)) {
+        $this->assertModDateIsNotEarlierThanCreationDate($this->modDate, $this->creationDate);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function assertModDateIsNotEarlierThanCreationDate(
+        ?DateTimeImmutable $modDate,
+        ?DateTimeImmutable $creationDate,
+    ): void {
+        if ($this->isModDateEarlierThanCreationDate($modDate, $creationDate)) {
             throw new ValidationException(sprintf(
-        'modDate date \'%s\' cannot be earlier in time than creationDate \'%s\'',
+                'modDate date \'%s\' cannot be earlier in time than creationDate \'%s\'',
                 $this->modDate,
                 $this->creationDate,
             ));
         }
+    }
+
+    private function isModDateEarlierThanCreationDate(
+        ?DateTimeImmutable $modDate,
+        ?DateTimeImmutable $creationDate,
+    ): bool {
+        return !is_null($modDate) && !is_null($creationDate) && ($modDate < $creationDate);
     }
 
     public static function fromPath(): self

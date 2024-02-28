@@ -60,11 +60,11 @@ final class DOMPDFCreatorTest extends TestCase
 
     private static function createMetadata(
         ?DateTimeImmutable $creationDate = null,
-        ?string            $creator = null,
-        ?string            $producer = null,
+        ?string $creator = null,
+        ?string $producer = null,
         ?DateTimeImmutable $modDate = null,
-        ?string            $description = null,
-        ?string            $keywords = null,
+        ?string $description = null,
+        ?string $keywords = null,
     ): Metadata {
         return new Metadata(
             creationDate: $creationDate,

@@ -47,7 +47,7 @@ final class CreateCoverLetterTest extends TestCase
                         ->shouldReceive('getTemplateFile')
                         ->once()
                         ->with($config['cover_letter_template_file_path'])
-                        ->andReturn(new TemplateFile($this->randomStringGenerator->generate()));
+                        ->andReturn(new TemplateFile('<html></html>'));
                 }
             )
         );
