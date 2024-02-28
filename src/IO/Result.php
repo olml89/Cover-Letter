@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace olml89\CoverLetter\Utils;
+namespace olml89\CoverLetter\IO;
 
 use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;

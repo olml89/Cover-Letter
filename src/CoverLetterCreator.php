@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace olml89\CoverLetter;
 
-use InvalidArgumentException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;
 use olml89\CoverLetter\PDFCreator\Metadata;
 use olml89\CoverLetter\PDFCreator\PDFCreator;

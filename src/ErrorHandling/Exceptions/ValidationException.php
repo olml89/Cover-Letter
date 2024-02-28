@@ -13,12 +13,12 @@ final class ValidationException extends InvalidArgumentException
         parent::__construct($message);
     }
 
-    public static function missing(string $inputClass): self
+    public static function missingArgument(string $argument): self
     {
         return new self(
             sprintf(
-                'Missing parameter for \'%s\'',
-                $inputClass,
+                'Argument \'%s\' is missing',
+                $argument,
             )
         );
     }

@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\NoReturn;
 use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
-use olml89\CoverLetter\Utils\Result;
+use olml89\CoverLetter\IO\Result;
 use Throwable;
 
 final class ErrorHandler

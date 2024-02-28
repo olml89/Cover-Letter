@@ -6,6 +6,8 @@ namespace olml89\CoverLetter\Filesystem;
 
 use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;
+use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
+use Throwable;
 
 final class DiskFilesystem implements Filesystem
 {
@@ -14,7 +16,7 @@ final class DiskFilesystem implements Filesystem
      */
     public function getDirectory(string $path): Directory
     {
-        if (!$this->directoryExistsAndIsReadable($path)) {
+        if (!is_dir($path) || !is_readable($path)) {
             throw InputReadingException::dir($path);
         }
 
@@ -22,12 +24,17 @@ final class DiskFilesystem implements Filesystem
     }
 
     /**
+     * @throws InputReadingException
      * @throws OutputCreationException
      */
     public function createDirectory(string $path): Directory
     {
-        if ($this->directoryExistsAndIsReadable($path)) {
-            return new Directory($this, $path);
+        if (is_dir($path)) {
+            if (is_readable($path)) {
+                return new Directory($this, $path);
+            }
+
+            throw InputReadingException::dir($path);
         }
 
         if (!mkdir($path)) {
@@ -37,13 +44,9 @@ final class DiskFilesystem implements Filesystem
         return new Directory($this, $path);
     }
 
-    private function directoryExistsAndIsReadable(string $path): bool
-    {
-        return is_dir($path) && is_readable($path);
-    }
-
     /**
      * @throws InputReadingException
+     * @throws ValidationException
      */
     public function getTemplateFile(string $path): TemplateFile
     {
@@ -51,11 +54,15 @@ final class DiskFilesystem implements Filesystem
             throw InputReadingException::file($path);
         }
 
-        if (($content = file_get_contents($path)) === false) {
+        try {
+            return new TemplateFile(file_get_contents($path));
+        }
+        catch (ValidationException $e) {
+            throw $e;
+        }
+        catch (Throwable) {
             throw InputReadingException::fileContent($path);
         }
-
-        return new TemplateFile($content);
     }
 
     /**
@@ -63,7 +70,10 @@ final class DiskFilesystem implements Filesystem
      */
     public function saveWritableFile(WritableFile $writableFile): void
     {
-        if (!file_put_contents($writableFile->path, $writableFile->content)) {
+        try {
+            file_put_contents($writableFile->path, $writableFile->content);
+        }
+        catch (Throwable) {
             throw OutputCreationException::file($writableFile->path);
         }
     }

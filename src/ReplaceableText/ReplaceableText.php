@@ -13,18 +13,6 @@ abstract readonly class ReplaceableText implements IsReplaceable, Stringable
         private string $text,
     ) {}
 
-    /**
-     * @throws ValidationException
-     */
-    public static function fromInput(?string $input): static
-    {
-        if (is_null($input)) {
-            throw ValidationException::missing(static::class);
-        }
-
-        return new static($input);
-    }
-
     abstract public function getPlaceholder(): string;
 
     public function getText(): string

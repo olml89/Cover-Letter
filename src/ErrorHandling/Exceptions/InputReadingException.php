@@ -8,22 +8,16 @@ use RuntimeException;
 
 final class InputReadingException extends RuntimeException
 {
-    public function __construct(string $type, string $path)
+    public function __construct(string $message)
     {
-        parent::__construct(
-            sprintf(
-                '\'%s\' %s does not exist or it is not readable',
-                $type,
-                $path,
-            )
-        );
+        parent::__construct($message);
     }
 
     public static function dir(string $path): self
     {
         return new self(
             sprintf(
-                '\'%s\' directory does not exist or it is not readable',
+                'Directory \'%s\' does not exist or it is not readable',
                 $path,
             )
         );
@@ -33,7 +27,7 @@ final class InputReadingException extends RuntimeException
     {
         return new self(
             sprintf(
-                '\'%s\' file does not exist or it is not readable',
+                'File \'%s\' does not exist or it is not readable',
                 $path,
             )
         );
@@ -43,7 +37,7 @@ final class InputReadingException extends RuntimeException
     {
         return new self(
             sprintf(
-                'Error getting content from \'%s\'',
+                'Error getting content from file \'%s\'',
                 $path,
             )
         );

@@ -17,6 +17,9 @@ use Smalot\PdfParser\Parser;
 use Tests\Factories\RandomStringGenerator;
 use Tests\TestCase;
 
+/**
+ * This test makes use of the bovigo/vfsStream package to mock the filesystem
+ */
 final class DOMPDFCreatorTest extends TestCase
 {
     private readonly TemplateFile $templateFile;
@@ -297,8 +300,10 @@ final class DOMPDFCreatorTest extends TestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
+        parent::tearDown();
+
         unlink($this->coverLetterFilePath);
     }
 }

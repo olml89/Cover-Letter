@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Tests;
 
 use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use olml89\CoverLetter\Application;
 use olml89\CoverLetter\ErrorHandling\ErrorHandlerManager;
 
@@ -16,7 +14,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected static function bootApplication(): Container
     {
-        return Application::bootstrap();
+        return Application::bootstrap()->getContainer();
     }
 
     protected function setUp(): void
