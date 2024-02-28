@@ -7,18 +7,21 @@ namespace Tests\Unit\Filesystem;
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
 use olml89\CoverLetter\Filesystem\TemplateFile;
 use olml89\CoverLetter\ReplaceableText\ReplaceableText;
+use Tests\Factories\Filesystem\TemplateFileFactory;
 use Tests\Factories\RandomStringGenerator;
 use Tests\TestCase;
 
 final class TemplateFileTest extends TestCase
 {
     private readonly RandomStringGenerator $randomStringGenerator;
+    private readonly TemplateFileFactory $templateFileFactory;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->randomStringGenerator = $this->container->get(RandomStringGenerator::class);
+        $this->templateFileFactory = $this->container->get(TemplateFileFactory::class);
     }
 
     public function testItDoesNotAllowInvalidHtml(): void
@@ -34,7 +37,7 @@ final class TemplateFileTest extends TestCase
 
     public function testItAllowsValidHtml(): void
     {
-        $content = file_get_contents(__DIR__ . '/../../Fixtures/cover_letter_template.html');
+        $content = $this->templateFileFactory->generate()->content;
 
         $template = new TemplateFile($content);
 
@@ -44,13 +47,10 @@ final class TemplateFileTest extends TestCase
 
     public function testItReturnsANewInstanceWithReplacedText(): void
     {
-        $contentFormat = '<html><body><p>%s</p></body></html>';
-
-        $placeholder = $this->randomStringGenerator->generate();
-        $text = $this->randomStringGenerator->generate();
-
-        $replaceableText = new readonly class($placeholder, $text) extends ReplaceableText
-        {
+        $replaceableText = new readonly class(
+            $this->randomStringGenerator->generate(),
+            $this->randomStringGenerator->generate()
+        ) extends ReplaceableText {
             public function __construct(
                 private string $placeholder,
                 string $text,
@@ -64,11 +64,28 @@ final class TemplateFileTest extends TestCase
             }
         };
 
-        $templateFile = (new TemplateFile(sprintf($contentFormat, $placeholder)))->replace($replaceableText);
+        $template = $this
+            ->templateFileFactory
+            ->generate($replaceableText->getPlaceholder());
 
         $this->assertEquals(
-            sprintf($contentFormat, $text),
-            $templateFile->content
+            str_replace(
+                $replaceableText->getPlaceholder(),
+                $replaceableText->getText(),
+                $template->content,
+            ),
+            $template->replace($replaceableText)->content
         );
+    }
+
+    public function testItComparesTemplates(): void
+    {
+        $placeholder = $this->randomStringGenerator->generate();
+        $template = $this->templateFileFactory->generate($placeholder);
+        $equalTemplate = $this->templateFileFactory->generate($placeholder);
+        $notEqualTemplate = $this->templateFileFactory->generate($this->randomStringGenerator->generate());
+
+        $this->assertTrue($template->equals($equalTemplate));
+        $this->assertFalse($template->equals($notEqualTemplate));
     }
 }

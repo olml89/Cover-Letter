@@ -61,24 +61,6 @@ final class DOMPDFCreatorTest extends TestCase
         $this->pdfCreator = $this->container->get(DOMPDFCreator::class);
     }
 
-    private static function createMetadata(
-        ?DateTimeImmutable $creationDate = null,
-        ?string $creator = null,
-        ?string $producer = null,
-        ?DateTimeImmutable $modDate = null,
-        ?string $description = null,
-        ?string $keywords = null,
-    ): Metadata {
-        return new Metadata(
-            creationDate: $creationDate,
-            creator: $creator,
-            keywords: $keywords,
-            modDate: $modDate,
-            producer: $producer,
-            description: $description
-        );
-    }
-
     private function parsePdfDetails(WritableFile $coverLetterFile): array
     {
         return (new Parser())
@@ -92,15 +74,15 @@ final class DOMPDFCreatorTest extends TestCase
 
         return [
             'not null static metadata' => [
-                self::createMetadata(
+                new Metadata(
                     creator: $randomStringGenerator->generate(),
+                    keywords: $randomStringGenerator->generate(),
                     producer: $randomStringGenerator->generate(),
                     description: $randomStringGenerator->generate(),
-                    keywords: $randomStringGenerator->generate(),
                 )
             ],
             'null static metadata' => [
-                self::createMetadata(),
+                new Metadata(),
             ],
         ];
     }
@@ -109,7 +91,7 @@ final class DOMPDFCreatorTest extends TestCase
     {
         $coverLetterFile = $this->pdfCreator->create(
             $this->coverLetterFilePath,
-            self::createMetadata(),
+            new Metadata(),
             $this->templateFile
         );
 
@@ -158,11 +140,9 @@ final class DOMPDFCreatorTest extends TestCase
 
     public function testItAddsCurrentSystemTimeAsCreationDateAndModDateIfBothAreNull(): void
     {
-        $metadata = self::createMetadata();
-
         $coverLetterFile = $this->pdfCreator->create(
             $this->coverLetterFilePath,
-            $metadata,
+            new Metadata(),
             $this->templateFile
         );
 
@@ -195,8 +175,7 @@ final class DOMPDFCreatorTest extends TestCase
 
     public function testItAddsModDateAsCreationDateAndModDateIfCreationDateIsNull(): void
     {
-        $modDate = new DateTimeImmutable();
-        $metadata = self::createMetadata(modDate: $modDate);
+        $metadata = new Metadata(modDate: new DateTimeImmutable());
 
         $coverLetterFile = $this->pdfCreator->create(
             $this->coverLetterFilePath,
@@ -208,29 +187,28 @@ final class DOMPDFCreatorTest extends TestCase
 
         // Compare values on the PDF metadata
         $this->assertEquals(
-            $modDate,
+            $metadata->modDate,
             DateTimeImmutable::create($details['CreationDate'])
         );
         $this->assertEquals(
-            $modDate,
+            $metadata->modDate,
             DateTimeImmutable::create($details['ModDate'])
         );
 
         // Compare values on the filesystem
         $this->assertEquals(
-            $modDate,
+            $metadata->modDate,
             (new DateTimeImmutable())->setTimestamp(filectime($this->coverLetterFilePath))
         );
         $this->assertEquals(
-            $modDate,
+            $metadata->modDate,
             (new DateTimeImmutable())->setTimestamp(filemtime($this->coverLetterFilePath))
         );
     }
 
     public function testItAddsCreationDateAsCreationDateAndModDateIfModDateIsNull(): void
     {
-        $creationDate = new DateTimeImmutable();
-        $metadata = self::createMetadata(creationDate: $creationDate);
+        $metadata = new Metadata(creationDate: new DateTimeImmutable());
 
         $coverLetterFile = $this->pdfCreator->create(
             $this->coverLetterFilePath,
@@ -242,21 +220,21 @@ final class DOMPDFCreatorTest extends TestCase
 
         // Compare values on the PDF metadata
         $this->assertEquals(
-            $creationDate,
+            $metadata->creationDate,
             DateTimeImmutable::create($details['CreationDate'])
         );
         $this->assertEquals(
-            $creationDate,
+            $metadata->creationDate,
             DateTimeImmutable::create($details['ModDate'])
         );
 
         // Compare values on the filesystem
         $this->assertEquals(
-            $creationDate,
+            $metadata->creationDate,
             (new DateTimeImmutable())->setTimestamp(filectime($this->coverLetterFilePath))
         );
         $this->assertEquals(
-            $creationDate,
+            $metadata->creationDate,
             (new DateTimeImmutable())->setTimestamp(filemtime($this->coverLetterFilePath))
         );
     }
@@ -266,7 +244,7 @@ final class DOMPDFCreatorTest extends TestCase
         $creationDate = new DateTimeImmutable();
         $modDate = $creationDate->modify('+1 day');
 
-        $metadata = self::createMetadata(
+        $metadata = new Metadata(
             creationDate: $creationDate,
             modDate: $modDate,
         );
@@ -281,21 +259,21 @@ final class DOMPDFCreatorTest extends TestCase
 
         // Compare values on the PDF metadata
         $this->assertEquals(
-            $creationDate,
+            $metadata->creationDate,
             DateTimeImmutable::create($details['CreationDate'])
         );
         $this->assertEquals(
-            $modDate,
+            $metadata->modDate,
             DateTimeImmutable::create($details['ModDate'])
         );
 
         // Compare values on the filesystem
         $this->assertEquals(
-            $creationDate,
+            $metadata->creationDate,
             (new DateTimeImmutable())->setTimestamp(filectime($this->coverLetterFilePath))
         );
         $this->assertEquals(
-            $modDate,
+            $metadata->modDate,
             (new DateTimeImmutable())->setTimestamp(filemtime($this->coverLetterFilePath))
         );
     }

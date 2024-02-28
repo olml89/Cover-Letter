@@ -18,12 +18,12 @@ final readonly class Metadata
      * @throws ValidationException
      */
     public function __construct(
-        public ?DateTimeImmutable $creationDate,
-        public ?string $creator,
-        public ?string $keywords,
-        public ?DateTimeImmutable $modDate,
-        public ?string $producer,
-        public ?string $description,
+        public ?DateTimeImmutable $creationDate = null,
+        public ?string $creator = null,
+        public ?string $keywords = null,
+        public ?DateTimeImmutable $modDate = null,
+        public ?string $producer = null,
+        public ?string $description = null,
     ) {
         $this->assertModDateIsNotEarlierThanCreationDate($this->modDate, $this->creationDate);
     }

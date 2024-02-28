@@ -20,18 +20,6 @@ final class MetadataTest extends TestCase
         $this->creationDate = new DateTimeImmutable();
     }
 
-    private function createMetadata(DateTimeImmutable $modDate): Metadata
-    {
-        return new Metadata(
-            creationDate: $this->creationDate,
-            creator: null,
-            keywords: null,
-            modDate: $modDate,
-            producer: null,
-            description: null
-        );
-    }
-
     public function testItThrowsValidationExceptionIfModDateIsLowerThanCreationDate(): void
     {
         $modDate = $this->creationDate->modify('-1 day');
@@ -44,14 +32,20 @@ final class MetadataTest extends TestCase
             ))
         );
 
-        $this->createMetadata($modDate);
+        new Metadata(
+            creationDate: $this->creationDate,
+            modDate: $modDate,
+        );
     }
 
     public function testItCreatesMetadataIfModDateIsEqualThanCreationDate(): void
     {
         $modDate = clone $this->creationDate;
 
-        $metadata = $this->createMetadata($modDate);
+        $metadata = new Metadata(
+            creationDate: $this->creationDate,
+            modDate: $modDate,
+        );
 
         $this->assertInstanceOf(Metadata::class, $metadata);
         $this->assertEquals($metadata->creationDate, $this->creationDate);
@@ -62,7 +56,10 @@ final class MetadataTest extends TestCase
     {
         $modDate = $this->creationDate->modify('+1 day');
 
-        $metadata = $this->createMetadata($modDate);
+        $metadata = new Metadata(
+            creationDate: $this->creationDate,
+            modDate: $modDate,
+        );
 
         $this->assertInstanceOf(Metadata::class, $metadata);
         $this->assertEquals($metadata->creationDate, $this->creationDate);

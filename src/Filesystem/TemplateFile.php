@@ -47,4 +47,9 @@ final readonly class TemplateFile
             )
         );
     }
+
+    public function equals(TemplateFile $templateFile): bool
+    {
+        return $this->content === $templateFile->content;
+    }
 }
