@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace olml89\CoverLetter\PDFCreator;
 
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
-use olml89\CoverLetter\Utils\DatetimeImmutable;
+use olml89\CoverLetter\Utils\DateTimeImmutable;
 use olml89\CoverLetter\Utils\RequiresArrayConfigurationFile;
 
 final readonly class Metadata
@@ -39,10 +39,10 @@ final readonly class Metadata
         $data = self::requireArrayConfigurationFile(self::PATH);
 
         return new self(
-            creationDate: DatetimeImmutable::create($data['creationDate']),
+            creationDate: DateTimeImmutable::create($data['creationDate']),
             creator: $data['creator'],
             keywords: $data['keywords'],
-            modDate: DatetimeImmutable::create($data['modDate']),
+            modDate: DateTimeImmutable::create($data['modDate']),
             producer: $data['producer'],
             description: $data['description'],
         );

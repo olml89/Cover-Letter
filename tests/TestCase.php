@@ -12,9 +12,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     protected Container $container;
 
+    protected static function bootApplication(): Container
+    {
+        return Application::bootstrap();
+    }
+
     protected function setUp(): void
     {
-        $this->container = Application::bootstrap();
+        $this->container = self::bootApplication();
     }
 
     protected function tearDown(): void

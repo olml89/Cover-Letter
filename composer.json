@@ -22,6 +22,8 @@
         "phpunit/phpunit": "^11.0",
         "mockery/mockery": "^1.6",
         "fakerphp/faker": "^1.23",
-        "dg/bypass-finals": "^1.6"
+        "dg/bypass-finals": "^1.6",
+        "smalot/pdfparser": "^2.8",
+        "mikey179/vfsstream": "^1.6"
     }
 }

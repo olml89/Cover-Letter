@@ -6,21 +6,21 @@ namespace Tests\Unit\PDFCreator;
 
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
 use olml89\CoverLetter\PDFCreator\Metadata;
-use olml89\CoverLetter\Utils\DatetimeImmutable;
+use olml89\CoverLetter\Utils\DateTimeImmutable;
 use Tests\TestCase;
 
 final class MetadataTest extends TestCase
 {
-    private readonly DatetimeImmutable $creationDate;
+    private readonly DateTimeImmutable $creationDate;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->creationDate = new DatetimeImmutable();
+        $this->creationDate = new DateTimeImmutable();
     }
 
-    private function createMetadata(DatetimeImmutable $modDate): Metadata
+    private function createMetadata(DateTimeImmutable $modDate): Metadata
     {
         return new Metadata(
             creationDate: $this->creationDate,
