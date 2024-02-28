@@ -22,7 +22,7 @@ final readonly class Input
 
         for ($i = 0; $i < count($argumentNames); ++$i) {
             $argumentName = $argumentNames[$i];
-            $arguments[$argumentName] = $argv[$i + 1] ?? ValidationException::missingArgument($argumentName);
+            $arguments[$argumentName] = $argv[$i + 1] ?? throw ValidationException::missingArgument($argumentName);
         }
 
         return new self($arguments);
@@ -33,6 +33,6 @@ final readonly class Input
      */
     public function get(string $argument): string
     {
-        return $this->arguments[$argument] ?? ValidationException::missingArgument($argument);
+        return $this->arguments[$argument] ?? throw ValidationException::missingArgument($argument);
     }
 }
