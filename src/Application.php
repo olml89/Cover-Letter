@@ -12,6 +12,7 @@ use olml89\CoverLetter\ErrorHandling\ErrorHandlerManager;
 use olml89\CoverLetter\Filesystem\DiskFilesystem;
 use olml89\CoverLetter\Filesystem\Filesystem;
 use olml89\CoverLetter\IO\Input;
+use olml89\CoverLetter\IO\Output;
 use olml89\CoverLetter\PDFCreator\DOMPDFCreator;
 use olml89\CoverLetter\PDFCreator\Metadata;
 use olml89\CoverLetter\PDFCreator\PDFCreator;
@@ -28,8 +29,11 @@ final readonly class Application
     public static function bootstrap(): self
     {
         self::bootstrapEnvironment(dirname(__DIR__));
-        $errorHandlerManager = self::bootErrorHandlerManager();
-        $container = self::bootstrapContainer($errorHandlerManager);
+        $container = self::bootstrapContainer();
+
+        $container
+            ->get(ErrorHandlerManager::class)
+            ->bootstrap();
 
         return new self($container);
     }
@@ -40,21 +44,22 @@ final readonly class Application
         $dotEnv->load();
     }
 
-    public static function bootErrorHandlerManager(): ErrorHandlerManager
-    {
-        return new ErrorHandlerManager(new ErrorHandler());
-    }
-
-    private static function bootstrapContainer(ErrorHandlerManager $errorHandlerManager): Container
+    private static function bootstrapContainer(): Container
     {
         return new Container([
             // Needed to be able to call the shutdown method from the outside tear downing tests.
-            // Also, we need it to instantiate it right now in order to catch exceptions, not to lazy load it.
-            ErrorHandlerManager::class => $errorHandlerManager,
+            ErrorHandler::class => create(ErrorHandler::class)->constructor(
+                get(Output::class)
+            ),
+            ErrorHandlerManager::class => create(ErrorHandlerManager::class)->constructor(
+                get(ErrorHandler::class)
+            ),
 
             // Need to bind the interfaces to the default implementations
             Filesystem::class => create(DiskFilesystem::class),
-            PDFCreator::class => create(DOMPDFCreator::class)->constructor(get(Filesystem::class)),
+            PDFCreator::class => create(DOMPDFCreator::class)->constructor(
+                get(Filesystem::class)
+            ),
 
             // Need to load these value objects providing a scalar value which is the path to grab values from.
             // Won't be created until CoverLetterCreator is needed.
@@ -88,7 +93,10 @@ final readonly class Application
             ->get(ErrorHandlerManager::class)
             ->shutdown();
 
-        echo $result->message;
-        exit($result->status);
+        // Print result and terminate
+        $output = $this->container->get(Output::class);
+
+        $output->write($result->message);
+        $output->die($result->status);
     }
 }

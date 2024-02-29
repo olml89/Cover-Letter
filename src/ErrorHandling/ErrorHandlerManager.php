@@ -13,6 +13,10 @@ final readonly class ErrorHandlerManager
     public function __construct(
         private ErrorHandler $errorHandler,
     ) {
+    }
+
+    public function bootstrap(): void
+    {
         error_reporting(-1);
 
         set_error_handler([$this, 'handleError']);

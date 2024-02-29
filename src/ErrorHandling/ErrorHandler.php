@@ -8,18 +8,23 @@ use JetBrains\PhpStorm\NoReturn;
 use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\OutputCreationException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
+use olml89\CoverLetter\IO\Output;
 use olml89\CoverLetter\IO\Result;
 use Throwable;
 
-final class ErrorHandler
+final readonly class ErrorHandler
 {
+    public function __construct(
+        private Output $output,
+    ) {}
+
     #[NoReturn]
     public function handle(Throwable $e): void
     {
         $errorCommand = $this->mapExceptionToCommand($e);
 
-        echo $errorCommand->message;
-        exit($errorCommand->status);
+        $this->output->write($errorCommand->message);
+        $this->output->die($errorCommand->status);
     }
 
     private function mapExceptionToCommand(Throwable $e): Result

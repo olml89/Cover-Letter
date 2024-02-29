@@ -11,17 +11,8 @@ use Throwable;
 
 final readonly class Result
 {
-    /**
-     * https://www.gsp.com/cgi-bin/man.cgi?section=3&topic=sysexits
-     */
-    private const int EX_OK = 0;
-    private const int EX_USAGE = 64;
-    private const int EX_NOINPUT = 66;
-    private const int EX_SOFTWARE = 70;
-    private const int EX_CANTCREAT = 73;
-
     public function __construct(
-        public int $status,
+        public ExitStatus $status,
         public string $message,
     ) {}
 
@@ -49,7 +40,7 @@ final readonly class Result
     public static function success(string $path): self
     {
         return new self(
-            self::EX_OK,
+            ExitStatus::EX_OK,
             self::formatMessage(
                 'Cover letter for file written correctly at %s',
                 $path,
@@ -60,7 +51,7 @@ final readonly class Result
     public static function usage(ValidationException $e): self
     {
         return new self(
-            self::EX_USAGE,
+            ExitStatus::EX_USAGE,
             self::formatException($e),
         );
     }
@@ -68,7 +59,7 @@ final readonly class Result
     public static function noinput(InputReadingException $e): self
     {
         return new self(
-            self::EX_NOINPUT,
+            ExitStatus::EX_NOINPUT,
             self::formatException($e),
         );
     }
@@ -76,7 +67,7 @@ final readonly class Result
     public static function software(Throwable $e): self
     {
         return new self(
-            self::EX_SOFTWARE,
+            ExitStatus::EX_SOFTWARE,
             self::formatException($e),
         );
     }
@@ -84,7 +75,7 @@ final readonly class Result
     public static function cantCreate(OutputCreationException $e): self
     {
         return new self(
-            self::EX_CANTCREAT,
+            ExitStatus::EX_CANTCREAT,
             self::formatException($e),
         );
     }

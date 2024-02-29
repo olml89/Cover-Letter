@@ -8,24 +8,28 @@ use RuntimeException;
 
 final class OutputCreationException extends RuntimeException
 {
-    public function __construct(string $type, string $path)
+    public function __construct(string $message)
     {
-        parent::__construct(
+        parent::__construct($message);
+    }
+
+    public static function dir(string $path): self
+    {
+        return new self(
             sprintf(
-                'Error creating %s \'%s\'',
-                $type,
+                'Error creating directory \'%s\'',
                 $path,
             )
         );
     }
 
-    public static function dir(string $dirPath): self
+    public static function file(string $path): self
     {
-        return new self('directory', $dirPath);
-    }
-
-    public static function file(string $filePath): self
-    {
-        return new self('file', $filePath);
+        return new self(
+            sprintf(
+                'Error creating file \'%s\'',
+                $path,
+            )
+        );
     }
 }
