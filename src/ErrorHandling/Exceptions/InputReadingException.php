@@ -13,6 +13,16 @@ final class InputReadingException extends RuntimeException
         parent::__construct($message);
     }
 
+    public static function require(string $path): self
+    {
+        return new self(
+            sprintf(
+                'Required file \'%s\' cannot be imported',
+                $path,
+            )
+        );
+    }
+
     public static function dir(string $path): self
     {
         return new self(

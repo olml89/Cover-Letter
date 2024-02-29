@@ -67,7 +67,7 @@ final class CoverLetterCreatorTest extends TestCase
                                     )
                                 );
                         }
-                    )
+                    )->makePartial()
                 ),
                 path: $coverLettersDirectoryPath,
             ),
@@ -84,6 +84,12 @@ final class CoverLetterCreatorTest extends TestCase
         $this->container->set(
             Configuration::class,
             $configuration
+        );
+
+        // Override the Metadata factory resolving on the container in order not to trigger the Metadata::fromPath()
+        $this->container->set(
+            Metadata::class,
+            new Metadata()
         );
 
         $this->container->set(

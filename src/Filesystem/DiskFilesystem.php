@@ -14,6 +14,19 @@ final class DiskFilesystem implements Filesystem
     /**
      * @throws InputReadingException
      */
+    public function require(string $path): array
+    {
+        try {
+            return require $path;
+        }
+        catch (Throwable) {
+            throw InputReadingException::require($path);
+        }
+    }
+
+    /**
+     * @throws InputReadingException
+     */
     public function getDirectory(string $path): Directory
     {
         if (!is_dir($path) || !is_readable($path)) {

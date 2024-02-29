@@ -64,7 +64,9 @@ final readonly class Application
             // Need to load these value objects providing a scalar value which is the path to grab values from.
             // Won't be created until CoverLetterCreator is needed.
             Metadata::class => factory(
-                fn (): Metadata => Metadata::fromPath()
+                fn (Container $container): Metadata => Metadata::fromPath(
+                    $container->get(Filesystem::class)
+                )
             ),
             Configuration::class => factory(
                 fn (Container $container): Configuration => Configuration::fromPath(

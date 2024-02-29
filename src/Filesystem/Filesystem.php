@@ -13,6 +13,11 @@ interface Filesystem
     /**
      * @throws InputReadingException
      */
+    public function require(string $path): array;
+
+    /**
+     * @throws InputReadingException
+     */
     public function getDirectory(string $path): Directory;
 
     /**

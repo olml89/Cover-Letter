@@ -35,6 +35,46 @@ final class DiskFilesystemTest extends TestCase
         $this->root = vfsStream::setup();
     }
 
+    public function testItThrowsInputReadingExceptionIfRequiredFileDoesNotExist(): void
+    {
+        $fileName = $this->randomStringGenerator->generate();
+
+        $path = vfsStream::url(
+            sprintf(
+                '%s/%s',
+                $this->root->path(),
+                $fileName,
+            )
+        );
+
+        $this->expectExceptionObject(
+            InputReadingException::require($path)
+        );
+
+        $this->diskFilesystem->require($path);
+    }
+
+    public function testItGetsRequiredFile(): void
+    {
+        $fileName = $this->randomStringGenerator->generate();
+
+        vfsStream::newFile($fileName)
+            ->at($this->root)
+            ->setContent('<?php return [];');
+
+        $path = vfsStream::url(
+            sprintf(
+                '%s/%s',
+                $this->root->path(),
+                $fileName,
+            )
+        );
+
+        $required = $this->diskFilesystem->require($path);
+
+        $this->assertIsArray($required);
+    }
+
     public function testItThrowsInputReadingExceptionIfDirectoryDoesNotExist(): void
     {
         $path = $this->randomStringGenerator->generate();

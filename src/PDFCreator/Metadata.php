@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace olml89\CoverLetter\PDFCreator;
 
+use olml89\CoverLetter\ErrorHandling\Exceptions\InputReadingException;
 use olml89\CoverLetter\ErrorHandling\Exceptions\ValidationException;
+use olml89\CoverLetter\Filesystem\Filesystem;
 use olml89\CoverLetter\Utils\DateTimeImmutable;
-use olml89\CoverLetter\Utils\RequiresArrayConfigurationFile;
 
 final readonly class Metadata
 {
-    use RequiresArrayConfigurationFile;
-
     private const string PATH = __DIR__ . '/../../config/metadata.php';
 
     /**
@@ -51,9 +50,12 @@ final readonly class Metadata
         return !is_null($modDate) && !is_null($creationDate) && ($modDate < $creationDate);
     }
 
-    public static function fromPath(): self
+    /**
+     * @throws InputReadingException
+     */
+    public static function fromPath(Filesystem $filesystem): self
     {
-        $data = self::requireArrayConfigurationFile(self::PATH);
+        $data = $filesystem->require(realpath(self::PATH));
 
         return new self(
             creationDate: DateTimeImmutable::create($data['creationDate']),
