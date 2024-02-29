@@ -58,10 +58,10 @@ final readonly class Metadata
         $data = $filesystem->require(realpath(self::PATH));
 
         return new self(
-            creationDate: DateTimeImmutable::create($data['creationDate']),
+            creationDate: DateTimeImmutable::create($data['creation_date']),
             creator: $data['creator'],
             keywords: $data['keywords'],
-            modDate: DateTimeImmutable::create($data['modDate']),
+            modDate: DateTimeImmutable::create($data['mod_date']),
             producer: $data['producer'],
             description: $data['description'],
         );
